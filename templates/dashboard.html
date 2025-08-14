@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatGPT Micro-Cap Trading Experiment</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -211,10 +211,10 @@
             </div>
         </div>
         
-        {% if graph %}
+        {% if chart_data and chart_data != '{}' %}
         <div class="chart-container">
             <h2>📈 Portfolio Performance</h2>
-            <div id="performance-chart"></div>
+            <canvas id="performance-chart" width="400" height="200"></canvas>
         </div>
         {% endif %}
         
@@ -308,11 +308,55 @@
         </div>
     </div>
     
-    {% if graph %}
+    {% if chart_data and chart_data != '{}' %}
     <script>
-        // Render the performance chart
-        var graphData = {{ graph|safe }};
-        Plotly.newPlot('performance-chart', graphData.data, graphData.layout, {responsive: true});
+        // Render the performance chart with Chart.js
+        try {
+            var chartData = {{ chart_data|safe }};
+            if (chartData && chartData.dates && chartData.values) {
+                const ctx = document.getElementById('performance-chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.dates,
+                        datasets: [{
+                            label: 'Portfolio Value',
+                            data: chartData.values,
+                            borderColor: '#2E8B57',
+                            backgroundColor: 'rgba(46, 139, 87, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (e) {
+            console.error('Error creating chart:', e);
+            document.getElementById('performance-chart').style.display = 'none';
+        }
     </script>
     {% endif %}
     

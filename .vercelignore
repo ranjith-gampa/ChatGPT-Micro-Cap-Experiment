@@ -1,0 +1,57 @@
+# Vercel ignore file to reduce deployment size and stay under 250MB limit
+
+# Documentation and research files (not needed for web app)
+Weekly Deep Research (PDF)/
+Weekly Deep Research (MD)/
+Experiment Details/
+Other/
+Start Your Own/
+Scripts and CSV Files/
+(6-30 - 7-25) Results.png
+
+# Development files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+.vscode/
+.DS_Store
+
+# Git files
+.git/
+.gitignore
+
+# Test files (not needed in production)
+tests/
+
+# Development scripts (not needed for web app)
+scripts/
+trading_script.py
+
+# Source files (not needed for web app - app.py contains the web app)
+src/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Environment files
+.env
+.venv/
+venv/
+env/
+
+# Documentation files
+README.md
+DEPLOYMENT.md
+API_KEYS.md
+
+# GitHub workflows (not needed in Vercel)
+.github/
+
+# Use lighter requirements for Vercel
+requirements.txt
