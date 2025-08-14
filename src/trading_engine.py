@@ -3,6 +3,7 @@
 import sys
 import os
 from pathlib import Path
+import pandas as pd
 
 # Add the project root to the Python path
 project_root = Path(__file__).resolve().parent.parent
@@ -30,7 +31,7 @@ def run_automated_trading():
             interactive=False
         )
         
-        print(f"✅ Trading engine completed. Portfolio value: ${cash + sum([row['cost_basis'] for _, row in chatgpt_portfolio.iterrows()]):.2f}")
+        print(f"✅ Trading engine completed. Portfolio value: ${cash + sum([row.get('cost_basis', 0) for _, row in chatgpt_portfolio.iterrows() if row.get('cost_basis', None) is not None and pd.notnull(row.get('cost_basis', None))]):.2f}")
         
         return True
         

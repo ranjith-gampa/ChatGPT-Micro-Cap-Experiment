@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime
 import json
+import html
 
 # Add the project root to the Python path
 project_root = Path(__file__).resolve().parent.parent
@@ -247,8 +248,8 @@ def generate_html_dashboard(data_dir: Path, reports_dir: Path):
     
     <script>
         // Portfolio data
-        const portfolioData = {json.dumps(portfolio_data[-20:] if portfolio_data else [])};
-        const tradeData = {json.dumps(trade_data[-10:] if trade_data else [])};
+        const portfolioData = JSON.parse("{html.escape(json.dumps(portfolio_data[-20:] if portfolio_data else []), quote=True)}");
+        const tradeData = JSON.parse("{html.escape(json.dumps(trade_data[-10:] if trade_data else []), quote=True)}");
         
         // Update total equity
         if (portfolioData.length > 0) {{

@@ -317,10 +317,42 @@
     {% endif %}
     
     <script>
-        // Auto-refresh page every 5 minutes during market hours
-        setTimeout(function() {
-            window.location.reload();
-        }, 300000); // 5 minutes
+        // Helper: Check if current time is within US market hours (9:30am-4:00pm ET, Mon-Fri)
+        function isMarketOpen() {
+            const now = new Date();
+            // Convert to US Eastern Time
+            const utcOffset = now.getTimezoneOffset() * 60000;
+            const estOffset = -5 * 60 * 60 * 1000; // EST is UTC-5
+            const est = new Date(now.getTime() + utcOffset + estOffset);
+            const day = est.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+            const hours = est.getHours();
+            const minutes = est.getMinutes();
+            // Market open: Mon-Fri, 9:30am-4:00pm
+            if (day === 0 || day === 6) return false;
+            if (hours < 9 || (hours === 9 && minutes < 30)) return false;
+            if (hours > 16 || (hours === 16 && minutes > 0)) return false;
+            return true;
+        }
+
+        function refreshTrades() {
+            if (!isMarketOpen()) return;
+            fetch('/trades')
+                .then(response => response.text())
+                .then(html => {
+                    // Replace trades table body
+                    const tbody = document.querySelector('.table-container table tbody');
+                    if (tbody) {
+                        tbody.innerHTML = html;
+                    }
+                })
+                .catch(err => {
+                    // Optionally log error
+                    console.error('Failed to update trades:', err);
+                });
+        }
+
+        // Refresh trades every 5 minutes during market hours
+        setInterval(refreshTrades, 300000); // 5 minutes
     </script>
 </body>
 </html>

@@ -64,25 +64,38 @@ def dashboard():
         
         if not total_rows.empty:
             # Create performance chart
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(
-                x=total_rows['Date'],
-                y=total_rows['Total Equity'],
-                mode='lines+markers',
-                name='ChatGPT Portfolio',
-                line=dict(color='#2E8B57', width=3),
-                marker=dict(size=6)
-            ))
-            
-            fig.update_layout(
-                title='Portfolio Performance Over Time',
-                xaxis_title='Date',
-                yaxis_title='Portfolio Value ($)',
-                template='plotly_white',
-                height=400
-            )
-            
-            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+            try:
+                fig = go.Figure()
+                fig.add_trace(go.Scatter(
+                    x=total_rows['Date'],
+                    y=total_rows['Total Equity'],
+                    mode='lines+markers',
+                    name='ChatGPT Portfolio',
+                    line=dict(color='#2E8B57', width=3),
+                    marker=dict(size=6)
+                ))
+                
+                fig.update_layout(
+                    title='Portfolio Performance Over Time',
+                    xaxis_title='Date',
+                    yaxis_title='Portfolio Value ($)',
+                    template='plotly_white',
+                    height=400
+                )
+                
+                graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+            except Exception as e:
+                print(f"Error creating Plotly figure: {e}")
+                # Fallback: empty chart or error message
+                fallback_fig = {
+                    "data": [],
+                    "layout": {
+                        "title": "Error loading chart",
+                        "xaxis": {"title": "Date"},
+                        "yaxis": {"title": "Portfolio Value ($)"}
+                    }
+                }
+                graphJSON = json.dumps(fallback_fig)
             
             # Latest statistics
             latest_stats = {

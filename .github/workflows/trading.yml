@@ -21,12 +21,19 @@ jobs:
       run: |
         pip install -r requirements.txt
     - name: Execute trading logic
+      id: trading
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
       run: |
         python src/trading_engine.py
+    - name: Report trading failure
+      if: failure() && steps.trading.conclusion == 'failure'
+      run: |
+        echo "Trading engine failed. Please check logs for details."
+        exit 1
     - name: Commit and push changes
+      if: success() && steps.trading.conclusion == 'success'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"

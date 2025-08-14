@@ -12,8 +12,9 @@ class DecisionMaker:
     def __init__(self):
         self.api_key = os.getenv('OPENAI_API_KEY')
         if self.api_key:
-            openai.api_key = self.api_key
+            self.client = openai.OpenAI(api_key=self.api_key)
         else:
+            self.client = None
             print("Warning: OpenAI API key not configured")
     
     def generate_trading_prompt(self, portfolio_data: Dict, market_data: Dict) -> str:
@@ -70,14 +71,14 @@ Remember: This is real money trading, so be conservative and follow strict risk 
         Returns:
             Trading decision dictionary or None if error
         """
-        if not self.api_key:
+        if not self.client:
             print("Cannot make automated decisions: OpenAI API key not configured")
             return None
         
         try:
             prompt = self.generate_trading_prompt(portfolio_data, market_data)
             
-            response = openai.ChatCompletion.create(
+            response = self.client.chat.completions.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": "You are a conservative micro-cap stock trading advisor."},
