@@ -1,0 +1,55 @@
+name: Daily Trading Operations
+
+on:
+  schedule:
+    # Weekdays at 9:30 AM EST (market open)
+    - cron: '30 14 * * 1-5'
+    # Weekdays at 4:00 PM EST (market close)  
+    - cron: '0 21 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  trading_update:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    - name: Execute trading logic
+      id: trading
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
+      run: |
+        python src/trading_engine.py
+    - name: Report trading failure
+      if: failure() && steps.trading.conclusion == 'failure'
+      run: |
+        echo "Trading engine failed. Please check logs for details."
+        exit 1
+    - name: Execute trading logic
+      id: trading
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
+      run: |
+        python src/trading_engine.py
+    - name: Report trading failure
+      if: failure() && steps.trading.conclusion == 'failure'
+      run: |
+        echo "Trading engine failed. Please check logs for details."
+        exit 1
+    - name: Commit and push changes
+      if: success() && steps.trading.conclusion == 'success'
+      if: success() && steps.trading.conclusion == 'success'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "📊 Daily trading update - $(date)" || exit 0
+        git push

@@ -68,8 +68,23 @@ Matplotlib for visualizations
 
 ChatGPT for decision-making
 
-# Installation
-To run the scripts locally, install the Python dependencies:
+# Installation & Automation
+
+## 🚀 New: Automated Trading System
+This repository now includes full CI/CD automation and web dashboard deployment!
+
+**Quick Start:**
+```bash
+pip install -r requirements.txt
+python scripts/daily_update.py      # Run daily portfolio update
+python scripts/generate_reports.py  # Generate charts and reports
+python app.py                       # Start web dashboard
+```
+
+**Live Dashboard**: See [Deployment Guide](DEPLOYMENT.md) for setting up automated daily updates and web dashboard.
+
+## Manual Installation
+To run the original scripts locally, install the Python dependencies:
 
 ```
 pip install -r requirements.txt
@@ -83,6 +98,29 @@ If you feel inspired to do something simiar, feel free to use this as a blueprin
 Updates are posted weekly on my blog — more coming soon!
 
 One final shameless plug: (https://substack.com/@nathanbsmith?utm_source=edit-profile-page)
+
+## 🔧 New Automation Features
+
+### Web Dashboard
+- **Live portfolio tracking** with interactive charts
+- **Performance metrics** and trade history
+- **Automated daily updates** via GitHub Actions
+- **Mobile-responsive** design
+
+### API Integration
+- **ChatGPT API** for automated trading decisions
+- **Alpha Vantage** backup market data source
+- **REST endpoints** for programmatic access
+
+### Deployment Ready
+- **GitHub Actions** workflows for CI/CD
+- **Automated testing** with pytest
+- **Report generation** with charts and analytics
+- **Multiple deployment options** (GitHub Pages, Vercel)
+
+**Setup Guide**: See [DEPLOYMENT.md](DEPLOYMENT.md) for complete automation setup instructions.
+
+**API Keys**: See [API_KEYS.md](API_KEYS.md) for required API key configuration.
 
 Find a mistake in the logs or have advice?
 Please Reach out here: nathanbsmith.business@gmail.com
