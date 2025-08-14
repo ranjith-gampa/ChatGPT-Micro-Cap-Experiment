@@ -89,7 +89,7 @@ Remember: This is real money trading, so be conservative and follow strict risk 
             
             decision_text = response.choices[0].message.content
             
-            # Parse the response (this would need more sophisticated parsing in practice)
+            # Parse the response into structured decision data
             decision = {
                 "raw_response": decision_text,
                 "timestamp": os.environ.get('GITHUB_RUN_ID', 'manual'),
@@ -112,7 +112,7 @@ Remember: This is real money trading, so be conservative and follow strict risk 
         Returns:
             List of parsed actions
         """
-        # This is a simplified parser - in practice you'd want more robust parsing
+        # Extract trading actions from structured response text
         actions = []
         lines = response_text.split('\n')
         
